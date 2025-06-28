@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopHub - Modern E-Commerce</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="#" class="logo" onclick="showPage('home')">ShopHub</a>
+        <div class="search-container">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search products..."
+            onkeyup="searchProducts(event)"
+          />
+          <span>🔍</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#" onclick="showPage('home')">Home</a></li>
+          <li><a href="#" onclick="showPage('products')">Products</a></li>
+          <li><a href="#" onclick="showPage('categories')">Categories</a></li>
+        </ul>
+        <div class="cart-icon" onclick="toggleCart()">
+          🛒
+          <span class="cart-count" id="cartCount">0</span>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div id="home" class="page active">
+        <div class="hero">
+          <h1>Welcome to ShopHub</h1>
+          <p>Discover amazing products at unbeatable prices</p>
+          <a href="#" class="cta-button" onclick="showPage('products')"
+            >Shop Now</a
+          >
+        </div>
+
+        <section class="categories">
+          <h2 class="section-title">Shop by Category</h2>
+          <div class="category-grid" id="categoryGrid"></div>
+        </section>
+
+        <section>
+          <h2 class="section-title">Featured Products</h2>
+          <div class="products-grid" id="featuredProducts"></div>
+        </section>
+      </div>
+
+      <div id="products" class="page">
+        <h2 class="section-title">All Products</h2>
+        <div class="filters">
+          <div class="filter-group">
+            <label>Category:</label>
+            <select
+              class="filter-select"
+              id="categoryFilter"
+              onchange="filterProducts()"
+            >
+              <option value="">All Categories</option>
+            </select>
+            <label>Sort by:</label>
+            <select
+              class="filter-select"
+              id="sortFilter"
+              onchange="filterProducts()"
+            >
+              <option value="">Default</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="title">Name: A to Z</option>
+            </select>
+          </div>
+        </div>
+        <div class="products-grid" id="allProducts"></div>
+      </div>
+
+      <div id="categories" class="page">
+        <h2 class="section-title">Categories</h2>
+        <div class="category-grid" id="allCategories"></div>
+      </div>
+
+      <div id="categoryProducts" class="page">
+        <h2 class="section-title" id="categoryTitle">Category Products</h2>
+        <div class="products-grid" id="categoryProductsGrid"></div>
+      </div>
+
+      <div id="searchResults" class="page">
+        <h2 class="section-title">Search Results</h2>
+        <div class="products-grid" id="searchResultsGrid"></div>
+      </div>
+
+      <div id="checkout" class="page">
+        <h2 class="section-title">Checkout</h2>
+
+        <div class="checkout-form">
+          <h3>Shipping Information</h3>
+          <form id="checkoutForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" required />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" required />
+            </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input type="text" id="address" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" required />
+              </div>
+              <div class="form-group">
+                <label for="zipCode">ZIP Code</label>
+                <input type="text" id="zipCode" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cardNumber">Card Number</label>
+              <input
+                type="text"
+                id="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                required
+              />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="expiryDate">Expiry Date</label>
+                <input
+                  type="text"
+                  id="expiryDate"
+                  placeholder="MM/YY"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" placeholder="123" required />
+              </div>
+            </div>
+            <div class="cart-total">
+              <h3>Order Total: $<span id="checkoutTotal">0.00</span></h3>
+              <button type="submit" class="checkout-btn">Place Order</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Product Details</h2>
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <img id="modalImage" class="modal-image" src="" alt="" />
+          <div class="modal-info">
+            <h2 id="modalTitle"></h2>
+            <div class="price" id="modalPrice"></div>
+            <div class="description" id="modalDescription"></div>
+            <button class="add-to-cart" onclick="addToCartFromModal()">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cartSidebar" class="cart-sidebar">
+      <div class="cart-header">
+        <h3>Shopping Cart</h3>
+        <button class="close-modal" onclick="toggleCart()">&times;</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-total">
+        <h3>Total: $<span id="cartTotal">0.00</span></h3>
+        <button class="checkout-btn" onclick="payNow()">Checkout</button>
+      </div>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
